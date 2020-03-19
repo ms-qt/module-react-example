@@ -13,36 +13,54 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
 
     <title>React App</title>
+
+    <!--<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js">-->
+    <!--    console.log("qrc:///qtwebchannel/qwebchannel.js")-->
+    <!--</script>-->
+    <!-- or -->
+    <script type="text/javascript" src="qwebchannel.js"></script>
+
+
+    <script type="text/javascript">
+
+        var _bdlbscWebDataComponent;
+        var app_access_token;
+        var user_access_token;
+        var user_id;
+        (function () {
+            new QWebChannel(qt.webChannelTransport, function (channel) {
+                _bdlbscWebDataComponent = channel.objects.bdlbscWebDataComponent;
+                app_access_token = _bdlbscWebDataComponent.app_access_token;
+                user_access_token = _bdlbscWebDataComponent.user_access_token;
+                user_id = _bdlbscWebDataComponent.user_id;
+                // 获取 app_access_token
+                console.log("app_access_token : " + app_access_token)
+                // 获取 user_access_token
+                console.log("user_access_token : " + _bdlbscWebDataComponent.user_access_token)
+                // 获取用户id
+                console.log("user_id : " + _bdlbscWebDataComponent.user_id)
+
+                _bdlbscWebDataComponent.data_change.connect(function (message) {
+                    // 接收 c++ 发送过来的数据
+                    console.log("js receive ： " + message);
+                })
+            });
+        }());
+
+        function send_data() {
+            // 发送数据给c++
+            _bdlbscWebDataComponent.on_send_data("{'action':'js send to cpp'}")
+        }
+
+    </script>
+
+
 </head>
 <body
 >
 <noscript>You need to enable JavaScript to run this app.</noscript>
 
-<!--<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js">-->
-<!--    console.log("qrc:///qtwebchannel/qwebchannel.js")-->
-<!--</script>-->
 
-
-<!-- or -->
-
-
-<script type="text/javascript" src="qwebchannel.js"></script>
-
-<script type="text/javascript">
-    window.onload = function () {
-        new QWebChannel(qt.webChannelTransport, function (channel) {
-            var _bdlbscWebDataComponent = channel.objects.bdlbscWebDataComponent;
-            app_access_token = _bdlbscWebDataComponent.app_access_token;
-            document.cookie = "app_access_token=" + app_access_token;
-            // 获取 app_access_token
-            console.log("app_access_token : " + _bdlbscWebDataComponent.app_access_token)
-            // 获取 user_access_token
-            console.log("user_access_token : " + _bdlbscWebDataComponent.user_access_token)
-            // 获取用户id
-            console.log("user_id : " + _bdlbscWebDataComponent.user_id)
-        });
-    }
-</script>
 <div id="root"></div>
 </body>
 </html>
